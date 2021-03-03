@@ -10,7 +10,7 @@ w = 1200
 h = 700
 x= w//2
 y = h//2
-xs=1200
+x=1200
 y2 = 300
 y1 = 500
 #CONSTANT----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ canvas=tk.Canvas(root)
 score =0
 lives = 3
 
-#GRAPHIC-----------------------------------------------------------------------------
+#GRAPHIC------------------------------------------------------------------------------
 
 bg = tk.PhotoImage(file="spacebac.png")
 background = canvas.create_image(650,400,image=bg)
@@ -39,32 +39,33 @@ scoreLabel.place(x=1220,y=20)
 livesLabel= Label(root, text="Lives :" + str(lives), bg="white", fg="black", font= 50)
 livesLabel.place(x=20,y=20) 
 # Create bullet
-bullets = tk.PhotoImage(file="missile.png")
-
+bullet = tk.PhotoImage(file="missile.png")
+bullets = canvas.create_image(50,400, image=bullet)
 
 plane= tk.PhotoImage(file="spaceship.png")
 airplane_fly = canvas.create_image(100,y+40,image=plane) 
 
 
 # enemy
-plane1= tk.PhotoImage(file="1enemy.png")
-my_plane1= canvas.create_image(1100,y-200,image=plane1) 
+planes= tk.PhotoImage(file="1enemy.png")
+my_circle= canvas.create_image(1100,y-200,image=planes) 
 
-plane2= tk.PhotoImage(file="2enemy.png")
-my_plane2= canvas.create_image(1100,y,image=plane2) 
+plans= tk.PhotoImage(file="2enemy.png")
+my_circles= canvas.create_image(1100,y,image=plans) 
 
-# FUNCTIONS------------------------------------------------------------------------- 
+
+# FUNCTIONS-------------------------------------------------------------------------
 
 def missile():
 
-    global upBullet, downBullet, middleBullet
-    canvas.move(upBullet,30,0)
-    canvas.move(downBullet, 30, 0)
+    global leftBullet, rightBullet, middleBullet
+    canvas.move(leftBullet,30,0)
+    canvas.move(rightBullet, 30, 0)
     canvas.move(middleBullet,40, 0)
-    myY = canvas.coords(upBullet)[1]
+    myY = canvas.coords(leftBullet)[1]
+    Shooting = myY <= 0
     
-    
-    if myY >0:
+    if not Shooting:
         canvas.after(100, lambda:missile())
     else:
         canvas.delete(leftBullet)
@@ -74,12 +75,12 @@ def missile():
 
 def Shoot():
 
-    global airplane_fly, upBullet, downBullet,middleBullet
+    global airplane_fly, leftBullet, rightBullet,middleBullet
     X1 = canvas.coords(airplane_fly)[0]
     Y1 = canvas.coords(airplane_fly)[1]
-    upBullet = canvas.create_image(X1 +120, Y1 -20, image = bullets)
+    leftBullet = canvas.create_image(X1 +120, Y1 -20, image = bullets)
     middleBullet = canvas.create_image(X1 +150, Y1 , image = bullets)
-    downBullet = canvas.create_image(X1 + 120, Y1 +20, image = bullets)
+    rightBullet = canvas.create_image(X1 + 120, Y1 +20, image = bullets)
     missile()
 # function move
 
@@ -100,35 +101,34 @@ def moveDown(event):
         canvas.move(airplane_fly, 0, 20)
 # function enemy
 def monster1():
-    global xs,y1,my_plane1
-    canvas.moveto(my_plane1,xs,y1)
-    if xs >50:
-        xs-=40
+    global x,y1,my_circle
+    canvas.moveto(my_circle,x,y1)
+    if x >50:
+        x-=40
         canvas.after(300,lambda: monster1())
     else:
-        xs = 1100
+        x = 1100
         canvas.after(300,lambda :monster1())
 def monster2():
-    global xs,y2,my_plane2
-    canvas.moveto(my_plane2,xs,y2)
-    if xs >50:
-        xs-=40
+    global x,y2,my_circles
+    canvas.moveto(my_circles,x,y2)
+    if x >50:
+        x-=40
         canvas.after(300,lambda: monster2())
     else:
-        xs = 1100
+        x = 1100
         canvas.after(300,lambda :monster2())
 
-
 #BINDING------------------------------------------------------------------------------
-monster1()
-monster2()
+monster1x_bullet = canvas.coords(plane[0])
 
-Shoot()      
+monster2()
+Shoot()  
+
 root.bind_all("<Left>", moveLeft) 
 root.bind_all("<Right>", moveRight)
 root.bind("<Up>", moveUp)
 root.bind("<Down>", moveDown)
-
 canvas.pack(expand=True,fill="both")
 root.resizable(True,True)
 
